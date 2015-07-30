@@ -22,6 +22,7 @@ import net.bozho.easycamera.EasyCamera;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -45,6 +46,17 @@ public class MainActivity extends Activity implements EasyCamera.PictureCallback
     private TextView orientationLabel;
     private OrientationEventListener orientationEventListener;
 
+    private Camera.Size getMaxPictureSize() {
+        Camera.Size max = null;
+        List<Camera.Size> sizes = camera.getParameters().getSupportedPictureSizes();
+        for (Camera.Size size : sizes) {
+            if (max == null || max.height < size.height) {
+                max = size;
+            }
+        }
+        return max;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +68,16 @@ public class MainActivity extends Activity implements EasyCamera.PictureCallback
         camera = DefaultEasyCamera.open();
         camera.setDisplayOrientation(90);
         Camera.Parameters parameters = camera.getParameters();
+        parameters.setJpegQuality(100);
+        Camera.Size maxSize = getMaxPictureSize();
+        Log.e("BLIMP", "Max size " + maxSize.width + 'x' + maxSize.height);
+//        parameters.setPictureSize(maxSize.width, maxSize.height);
+        //set camera to continually auto-focus
+        if (parameters.getSupportedFocusModes().contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+        } else {
+            // TODO: Choose another supported mode
+        }
         parameters.set("orientation", "portrait");
         parameters.setRotation(90);
         camera.setParameters(parameters);
@@ -66,7 +88,9 @@ public class MainActivity extends Activity implements EasyCamera.PictureCallback
 
         orientationEventListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_UI) {
             public void onOrientationChanged(int orientation) {
+//                Log.e("BLIMP", "" + orientation);
                 String orientationString = String.valueOf(orientation);
+                imageProcessor.setRotation(orientation);
                 setOrientationLabelText(orientationString);
             }
         };
