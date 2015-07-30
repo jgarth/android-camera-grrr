@@ -218,7 +218,6 @@ public class CameraPreview extends ViewGroup implements SurfaceHolder.Callback {
         }
     }
 
-
     private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {
         final double ASPECT_TOLERANCE = 0.1;
         double targetRatio = (double) w / h;

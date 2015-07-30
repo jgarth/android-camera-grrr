@@ -71,7 +71,7 @@ public class MainActivity extends Activity implements EasyCamera.PictureCallback
         parameters.setJpegQuality(100);
         Camera.Size maxSize = getMaxPictureSize();
         Log.e("BLIMP", "Max size " + maxSize.width + 'x' + maxSize.height);
-//        parameters.setPictureSize(maxSize.width, maxSize.height);
+        parameters.setPictureSize(maxSize.width, maxSize.height);
         //set camera to continually auto-focus
         if (parameters.getSupportedFocusModes().contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
             parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
